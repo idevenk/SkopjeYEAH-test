@@ -1,34 +1,24 @@
-<!DOCTYPE html>  
-<html>          
-  <head>      
-    <title>SkopjeYeah</title> 
-<style>
-h1{
-  color: rgb(6, 2, 56);
-}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="map"></div>
+    
+    <button id="reportBtn" onclick="openModal()">+ Report New</button>
 
-body {
-   background-color: rgb(248, 250, 222);
-}
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <h3>1. What is the Problem?</h3>
+            <button onclick="selectCategory('Air Quality')">Air Quality</button>
+            <button onclick="selectCategory('Illegal Landfill')">Illegal Landfill</button>
+            <button onclick="selectCategory('Full Container')">Full Container</button>
+        </div>
+    </div>
 
-#air {
-background-color: rgb(186, 219, 222);
-}
-</style>
-  </head>
-  <body>       
- 
-    <h1 id="air"> Za Poubavo i pozdravo Skopje</h1>
-<!-- u can use class as well samo gore e so . ne #-->
-    <img src="https://macedonia-timeless.com/wp-content/uploads/2018/08/skopje-plostad-makedonija.jpg"width="600">
-
-  <p>air quality, mapiranje divi deponii <br>i organizacija na kontinjeri</p>
-    <h2>Air Quality</h2>
-
-  <p><strong>Air</strong> Quality today</p>
-<!-- stavi air quality indicator i pm cesticki-->
-  <h2>Divi deponii i kontinjeri</h2>
-<!-- stavi mapa -->
-   
-  </body>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
 </html>
