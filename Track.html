@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkopjeYeah - Track</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="top-bar">
+        <div class="brand">
+            <span class="brand-mark"><img src="logo.png"></span>
+            <span class="brand-text">SkopjeYEAH</span>
+        </div>
+
+    </header>
+
+    <main class="track-page">
+        <section class="track-intro">
+            <h1>Track Reports</h1>
+            <p>See all community reports and follow their progress.</p>
+        </section>
+        <div id="trackList" class="track-list">
+            <div class="loading-card">Loading reports...</div>
+        </div>
+    </main>
+
+     <footer class="bottom-nav">
+        <a href="INDEX.html#home" class="nav-item active"><span class="nav-icon"><img src="home_ico.png" alt="Home"></span><span>Home</span></a>
+        <a href="AirQuality.html" class="nav-item"><span class="nav-icon"><img src="air_quality_ico.png" alt="Air Quality"></span><span>Air Quality</span></a>
+        <a href="Track.html" class="nav-item"><span class="nav-icon"><img src="track_ico.png" alt="Track"></span><span>Track</span></a>
+        <a href="#" class="nav-item"><span class="nav-icon"><img src="settings_ico.png" alt="Settings"></span><span>Settings</span></a>
+    </footer>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC_QZc-m7gmNjaOUFm3xAI6c3KCOE4YghU",
+            authDomain: "skopjeyeah.firebaseapp.com",
+            projectId: "skopjeyeah",
+            storageBucket: "skopjeyeah.firebasestorage.app",
+            messagingSenderId: "70994576403",
+            appId: "1:70994576403:web:b4c20356fae69c69bfebe6",
+            measurementId: "G-T2XG7RFMBR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function statusToProgress(status) {
+            if (!status) return 24;
+            const map = {
+                'Reported': 30,
+                'Viewed': 55,
+                'Resolving': 72,
+                'Resolved': 100,
+            };
+            return map[status] || 45;
+        }
+
+        function renderTrackCard(report) {
+            const progress = statusToProgress(report.status);
+            return `
+                <article class="track-card">
+                    <h3>${report.title} • ${report.description}</h3>
+                    <div class="status-bar">
+                        <div class="status-fill" style="width: ${progress}%;"></div>
+                    </div>
+                    <div class="track-meta">
+                        <span>${report.status || 'Reported'}</span>
+                        <span>${new Date(report.timestamp?.seconds ? report.timestamp.seconds * 1000 : report.timestamp).toLocaleString()}</span>
+                    </div>
+                </article>
+            `;
+        }
+
+        function loadReports() {
+            const list = document.getElementById('trackList');
+            db.collection('pins').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+                if (snapshot.empty) {
+                    list.innerHTML = '<div class="loading-card">No reports yet.</div>';
+                    return;
+                }
+
+                const html = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    return renderTrackCard(data);
+                }).join('');
+
+                list.innerHTML = html;
+            }, error => {
+                list.innerHTML = '<div class="loading-card">Unable to load reports.</div>';
+                console.error(error);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadReports();
+        });
+    </script>
+</body>
+</html>

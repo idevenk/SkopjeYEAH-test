@@ -1,24 +1,108 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkopjeYeah</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="map"></div>
     
-    <button id="reportBtn" onclick="openModal()">+ Report New</button>
+    <header id="home" class="top-bar">
+        <div class="brand">
+            <span class="brand-mark"><img src="logo.png"></span>
+            <span class="brand-text">SkopjeYEAH</span>
+        </div>
+    
+    </header>
 
-    <div id="reportModal" class="modal">
-        <div class="modal-content">
-            <h3>1. What is the Problem?</h3>
-            <button onclick="selectCategory('Air Quality')">Air Quality</button>
-            <button onclick="selectCategory('Illegal Landfill')">Illegal Landfill</button>
-            <button onclick="selectCategory('Full Container')">Full Container</button>
+    <div id="map"></div>
+
+    <div class="report-action">
+        <div class="report-label">REPORT NEW</div>
+        <button id="reportBtn" onclick="openSheet()">+</button>
+    </div>
+
+    <footer class="bottom-nav">
+        <a href="INDEX.html#home" class="nav-item active"><span class="nav-icon"><img src="home_ico.png" alt="Home"></span><span>Home</span></a>
+        <a href="AirQuality.html" class="nav-item"><span class="nav-icon"><img src="air_quality_ico.png" alt="Air Quality"></span><span>Air Quality</span></a>
+        <a href="Track.html" class="nav-item"><span class="nav-icon"><img src="track_ico.png" alt="Track"></span><span>Track</span></a>
+        <a href="#" class="nav-item"><span class="nav-icon"><img src="settings_ico.png" alt="Settings"></span><span>Settings</span></a>
+    </footer>
+
+    <div id="reportSheet" class="sheet hidden">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+            <div>
+                <h3 id="sheetTitle">Create New Report</h3>
+                <p id="sheetSubTitle" class="sheet-subtitle">Choose a report type</p>
+            </div>
+            <button class="sheet-close" onclick="closeSheet()">×</button>
+        </div>
+
+        <div id="reportSelect" class="report-step">
+            <button class="report-type" onclick="selectCategory('Illegal Landfill', this)">
+                <span class="report-icon"><img src="landfill_ico.png"></span>
+                <span class="report-name">Illegal Landfill</span>
+                <span class="report-caption">Report illegal waste disposal</span>
+            </button>
+            <button class="report-type" onclick="selectCategory('Full Container', this)">
+                <span class="report-icon"><img src="dumpster_ico.png"></span>
+                <span class="report-name">Mark Dumpster</span>
+                <span class="report-caption">Flag (overflowing) public dumpsters</span>
+            </button>
+        </div>
+
+        <div id="reportFormL" class="report-step hidden">
+            <p class="selected-label" id="selectedTypeLabel">Select a report type</p>
+            <input id="reportDescriptionL" type="text" placeholder="Describe the location or issue" />
+            <label class="checkbox-label"><input id="reportFullCheckboxL" type="checkbox" />Urgent</label>
+            <label class="upload-label">
+                Add photo
+                <input id="reportImageL" type="file" accept="image/*" onchange="previewReportImage(event)" />
+            </label>
+            <img id="previewImageL" class="preview-image hidden" src="" alt="Report preview" />
+            <p class="hint-text">Tap the map to choose the report location.</p>
+            <button id="confirmReportBtnL" onclick="confirmReport()">Submit</button>
+        </div>
+
+        <div id="reportFormD" class="report-step hidden">
+            <p class="selected-label" id="selectedTypeLabelD">Select a report type</p>
+            <input id="reportDescriptionD" type="text" placeholder="Describe the location or issue" />
+            <label class="checkbox-label"><input id="reportFullCheckboxD" type="checkbox" /> Mark as full</label>
+            <p class="hint-text">Tap the map to choose the report location.</p>
+            <button id="confirmReportBtnD" onclick="confirmReport()">Submit</button>
         </div>
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="script.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC_QZc-m7gmNjaOUFm3xAI6c3KCOE4YghU",
+            authDomain: "skopjeyeah.firebaseapp.com",
+            projectId: "skopjeyeah",
+            storageBucket: "skopjeyeah.firebasestorage.app",
+            messagingSenderId: "70994576403",
+            appId: "1:70994576403:web:b4c20356fae69c69bfebe6",
+            measurementId: "G-T2XG7RFMBR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const analytics = firebase.analytics();
+
+        window.db = db;
+        window.analytics = analytics;
+    </script>
+
+    <script defer src="script.js"></script>
+
 </body>
 </html>
+
