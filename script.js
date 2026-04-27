@@ -54,13 +54,40 @@ document.addEventListener('DOMContentLoaded', () => {
         const file = event.target.files[0];
         if (!file) return;
         readFileAsDataURL(file).then(url => {
-            const preview = document.getElementById('previewImage');
+            const preview = document.getElementById('previewImageL');
             preview.src = url;
             preview.classList.remove('hidden');
             if (currentReport) {
                 currentReport.imageUrl = url;
             }
         });
+    }
+
+    function setLandfillTag(tag, button) {
+        if (!currentReport || currentReport.type !== 'landfill') return;
+        currentReport.tag = tag;
+        document.querySelectorAll('.severity-button').forEach(btn => btn.classList.remove('active'));
+        if (button) button.classList.add('active');
+    }
+
+    function updateSeverityLabel(value) {
+        const severityLabel = document.getElementById('severityValue');
+        if (severityLabel) severityLabel.textContent = value;
+        if (currentReport && currentReport.type === 'landfill') {
+            currentReport.severity = Number(value);
+        }
+    }
+
+    function openSuccessSheet() {
+        document.getElementById('reportSuccessSheet').classList.remove('hidden');
+    }
+
+    function closeSuccessSheet() {
+        document.getElementById('reportSuccessSheet').classList.add('hidden');
+    }
+
+    function gotoTrack() {
+        window.location.href = 'Track.html';
     }
 
     function selectCategory(category, button) {
@@ -139,6 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
             imageUrl = await readFileAsDataURL(imageFile);
         }
 
+        const severity = currentReport.type === 'landfill' ? (currentReport.severity || Number(document.getElementById('reportSeverityL').value)) : null;
+        const tag = currentReport.type === 'landfill' ? currentReport.tag || 'General' : null;
+
         const reportData = {
             type: currentReport.type,
             title: currentReport.label,
@@ -148,6 +178,8 @@ document.addEventListener('DOMContentLoaded', () => {
             latitude: currentReport.latitude,
             longitude: currentReport.longitude,
             status: 'Reported',
+            severity,
+            tag,
             timestamp: new Date()
         };
 
@@ -155,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const docRef = await window.db.collection('pins').add(reportData);
             addPinToMap(reportData, docRef.id);
             closeSheet();
+            openSuccessSheet();
         } catch (error) {
             console.error('Error saving report:', error);
             alert('Unable to save report. Try again.');
@@ -193,7 +226,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.openSheet = openSheet;
     window.closeSheet = closeSheet;
+    window.openSuccessSheet = openSuccessSheet;
+    window.closeSuccessSheet = closeSuccessSheet;
+    window.gotoTrack = gotoTrack;
     window.selectCategory = selectCategory;
+    window.setLandfillTag = setLandfillTag;
+    window.updateSeverityLabel = updateSeverityLabel;
     window.confirmReport = confirmReport;
     window.previewReportImage = previewReportImage;
 
