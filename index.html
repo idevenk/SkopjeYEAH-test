@@ -25,10 +25,10 @@
     </div>
 
     <footer class="bottom-nav">
-        <a href="index.html#home" class="nav-item active"><span class="nav-icon"><img src="home_ico.png" alt="Home"></span><span>Home</span></a>
+        <a href="INDEX.html#home" class="nav-item active"><span class="nav-icon"><img src="home_ico.png" alt="Home"></span><span>Home</span></a>
         <a href="AirQuality.html" class="nav-item"><span class="nav-icon"><img src="air_quality_ico.png" alt="Air Quality"></span><span>Air Quality</span></a>
         <a href="Track.html" class="nav-item"><span class="nav-icon"><img src="track_ico.png" alt="Track"></span><span>Track</span></a>
-        <a href="#" class="nav-item"><span class="nav-icon"><img src="settings_ico.png" alt="Settings"></span><span>Settings</span></a>
+        <a href="settings.html" class="nav-item"><span class="nav-icon"><img src="settings_ico.png" alt="Settings"></span><span>Settings</span></a>
     </footer>
 
     <div id="reportSheet" class="sheet hidden">
@@ -57,6 +57,16 @@
         <div id="reportFormL" class="report-step hidden">
             <p class="selected-label" id="selectedTypeLabel">Select a report type</p>
             <input id="reportDescriptionL" type="text" placeholder="Describe the location or issue" />
+            <div class="severity-group">
+                <button type="button" class="severity-button" onclick="setLandfillTag('Near School', this)">Near School</button>
+                <button type="button" class="severity-button" onclick="setLandfillTag('Near River', this)">Near River</button>
+            </div>
+            <div class="range-group">
+                <span>Early Stage</span>
+                <input id="reportSeverityL" type="range" min="1" max="100" value="30" oninput="updateSeverityLabel(this.value)" />
+                <span>Large</span>
+            </div>
+            <div class="severity-label"><span id="severityValue">30</span>% severity</div>
             <label class="checkbox-label"><input id="reportFullCheckboxL" type="checkbox" />Urgent</label>
             <label class="upload-label">
                 Add photo
@@ -73,6 +83,22 @@
             <label class="checkbox-label"><input id="reportFullCheckboxD" type="checkbox" /> Mark as full</label>
             <p class="hint-text">Tap the map to choose the report location.</p>
             <button id="confirmReportBtnD" onclick="confirmReport()">Submit</button>
+        </div>
+    </div>
+
+    <div id="reportSuccessSheet" class="sheet hidden success-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+            <div>
+                <h3>Report Submitted</h3>
+                <p class="sheet-subtitle">Successfully sent to the city team.</p>
+            </div>
+            <button class="sheet-close" onclick="closeSuccessSheet()">×</button>
+        </div>
+        <div class="success-card">
+            <div class="success-icon">✓</div>
+            <h2>Report Submitted Successfully!</h2>
+            <button class="primary-btn" onclick="gotoTrack()">Track Now</button>
         </div>
     </div>
 
@@ -105,4 +131,3 @@
 
 </body>
 </html>
-
