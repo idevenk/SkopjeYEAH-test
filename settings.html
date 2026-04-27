@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkopjeYeah - Settings</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="top-bar">
+        <div class="brand">
+            <span class="brand-mark"><img src="logo.png" alt="Logo"></span>
+            <span class="brand-text">SkopjeYEAH</span>
+        </div>
+    </header>
+
+    <main class="settings-page">
+        <div class="settings-panel">
+            <div class="settings-card">
+                <h2>Official Sign In</h2>
+                <p>Enter the official access code to manage report statuses.</p>
+                <input id="officialCode" type="password" placeholder="Official code" />
+                <button id="signInBtn" class="primary-btn" onclick="signInOfficial()">Sign In</button>
+                <p id="signInMessage" class="hint-text"></p>
+            </div>
+
+            <div id="adminPanel" class="settings-card" style="display:none;">
+                <h2>Manage Reports</h2>
+                <p>Update status for submitted reports.</p>
+                <div id="reportList"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bottom-nav">
+        <a href="INDEX.html#home" class="nav-item"><span class="nav-icon"><img src="home_ico.png" alt="Home"></span><span>Home</span></a>
+        <a href="AirQuality.html" class="nav-item"><span class="nav-icon"><img src="air_quality_ico.png" alt="Air Quality"></span><span>Air Quality</span></a>
+        <a href="Track.html" class="nav-item"><span class="nav-icon"><img src="track_ico.png" alt="Track"></span><span>Track</span></a>
+        <a href="settings.html" class="nav-item active"><span class="nav-icon"><img src="settings_ico.png" alt="Settings"></span><span>Settings</span></a>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC_QZc-m7gmNjaOUFm3xAI6c3KCOE4YghU",
+            authDomain: "skopjeyeah.firebaseapp.com",
+            projectId: "skopjeyeah",
+            storageBucket: "skopjeyeah.firebasestorage.app",
+            messagingSenderId: "70994576403",
+            appId: "1:70994576403:web:b4c20356fae69c69bfebe6",
+            measurementId: "G-T2XG7RFMBR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const officialPassword = 'skopjeadmin';
+        let isOfficial = false;
+
+        function signInOfficial() {
+            const code = document.getElementById('officialCode').value.trim();
+            const message = document.getElementById('signInMessage');
+            if (code === officialPassword) {
+                isOfficial = true;
+                message.textContent = 'Signed in as official. You can manage report statuses.';
+                message.style.color = '#2e7d32';
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('officialCode').value = '';
+                loadReports();
+            } else {
+                message.textContent = 'Access code is incorrect.';
+                message.style.color = '#d32f2f';
+            }
+        }
+
+        async function loadReports() {
+            const reportList = document.getElementById('reportList');
+            reportList.innerHTML = '<p class="hint-text">Loading reports...</p>';
+            const snapshot = await db.collection('pins').orderBy('timestamp', 'desc').get();
+            reportList.innerHTML = '';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const item = document.createElement('div');
+                item.className = 'report-card';
+                item.innerHTML = `
+                    <h2>${data.title || 'Report'}</h2>
+                    <p>${data.description || 'No description'}</p>
+                    <p>Status: <span class="status-pill">${data.status || 'Reported'}</span></p>
+                    <p>${data.tag ? 'Tag: ' + data.tag : ''} ${data.severity ? 'Severity: ' + data.severity + '%' : ''}</p>
+                    <div class="report-actions">
+                        <button class="status-button" onclick="updateReportStatus('${doc.id}', 'Reported')">Reported</button>
+                        <button class="status-button" onclick="updateReportStatus('${doc.id}', 'In Progress')">In Progress</button>
+                        <button class="status-button" onclick="updateReportStatus('${doc.id}', 'Resolved')">Resolved</button>
+                    </div>
+                `;
+                reportList.appendChild(item);
+            });
+            if (!reportList.children.length) {
+                reportList.innerHTML = '<p class="hint-text">No reports yet.</p>';
+            }
+        }
+
+        async function updateReportStatus(id, status) {
+            await db.collection('pins').doc(id).update({ status });
+            loadReports();
+        }
+    </script>
+</body>
+</html>
