@@ -85,11 +85,11 @@
             </div>
             <div class="severity-label"><span id="severityValue">30</span>% <span data-i18n="severity">severity</span></div>
             <label class="checkbox-label"><input id="reportFullCheckboxL" type="checkbox" /><span data-i18n="urgent">Urgent</span></label>
-            <label class="upload-label" data-i18n="addPhoto">
-                Add photo or take one
-                <input id="reportImageL" type="file" accept="image/*" capture="environment" onchange="handleReportImageInput(event)" />
+           <label class="upload-label" data-i18n="addPhoto">
+                Add photo
+                <input id="reportImageL" type="file" accept="image/*" onchange="previewReportImage(event)" />
             </label>
-            <img class="preview-image hidden" src="" alt="Report preview" />
+            <img id="previewImageL" class="preview-image hidden" src="" alt="Report preview" /> 
             <p class="hint-text" data-i18n="reportLocationHint">Tap the map to choose the report location.</p>
             <button id="confirmReportBtnL" onclick="confirmReport()" data-i18n="submit">Submit</button>
         </div>
