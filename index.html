@@ -99,10 +99,10 @@
             <input id="reportDescriptionD" type="text" placeholder="Describe the location or issue" data-i18n-placeholder="describeLocation" />
             <label class="checkbox-label"><input id="reportFullCheckboxD" type="checkbox" /> <span data-i18n="markAsFull">Mark as full</span></label>
             <label class="upload-label" data-i18n="addPhoto">
-                Add photo or take one
-                <input id="reportImageD" type="file" accept="image/*" capture="environment" onchange="handleReportImageInput(event)" />
+                Add photo
+                <input id="reportImageL" type="file" accept="image/*" onchange="previewReportImage(event)" />
             </label>
-            <img class="preview-image hidden" src="" alt="Report preview" />
+            <img id="previewImageL" class="preview-image hidden" src="" alt="Report preview" />
             <p class="hint-text" data-i18n="reportLocationHint">Tap the map to choose the report location.</p>
             <button id="confirmReportBtnD" onclick="confirmReport()" data-i18n="submit">Submit</button>
         </div>
