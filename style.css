@@ -5,7 +5,37 @@ body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background-color: #eef2f6;
   color: #172937;
+  font-family: "Fredoka", sans-serif;
 }
+
+html {
+  font-size: var(--base-font-size, 16px);
+}
+
+#hero{
+  font-family: "Fredoka", sans-serif;
+  background-image: url('heder.png');
+  background-size: cover;
+  background-position: center;
+  height: 200px;
+  padding-top: 100px;
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+.rotating-info {
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+
 
 .top-bar {
   position: fixed;
@@ -13,42 +43,19 @@ body {
   left: 0;
   right: 0;
   height: 72px;
-  background: #1f3a53;
+  background:#053b21;;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 18px;
   z-index: 1002;
-  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
 
 .brand-mark {
-  width: 46px;
-  height: 46px;
-  border-radius: 18px;
-  display: grid;
-  place-items: center;
-  color: white;
-  font-weight: 700;
-  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.18);
-}
-
-.brand-mark img {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-}
-
-.brand-text {
-  color: white;
-  font-size: 1.15rem;
-  font-weight: 700;
+  background-color: #053b21;
+  height: 70px;
+  width: auto;
 }
 
 .menu-btn {
@@ -61,6 +68,25 @@ body {
   justify-content: space-between;
   padding: 10px 0;
   cursor: pointer;
+}
+
+.location-btn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.location-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .menu-btn span {
@@ -103,7 +129,7 @@ body {
   text-transform: uppercase;
   font-weight: 800;
   background: rgba(255, 255, 255, 0.95);
-  color: #1f3241;
+  color: #0c8048;
   padding: 9px 16px;
   border-radius: 999px;
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
@@ -193,7 +219,7 @@ body {
 
 #reportBtn {
   pointer-events: auto;
-  background-color: #1f3a53;
+  background-color: #053b21;;
   color: white;
   border: none;
   width: 66px;
@@ -334,10 +360,53 @@ body {
   flex: 1;
 }
 
+.severity-bar-section {
+  display: grid;
+  gap: 12px;
+  padding: 10px 0 0;
+}
+
+.severity-bar-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #172937;
+}
+
+.severity-legend {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: #5c6d7c;
+  margin-top: 6px;
+}
+
+.severity-legend span {
+  flex: 1;
+  text-align: center;
+}
+
 .severity-label {
   font-weight: 700;
   color: #172937;
 }
+
+.local-aq-banner,
+.aq-info-notice {
+  max-width: 940px;
+  margin: 16px auto;
+  padding: 14px 18px;
+  border-radius: 20px;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+.aq-info-notice {
+  background: #4caf50;
+}
+
 
 .primary-btn {
   width: 100%;
@@ -480,7 +549,7 @@ body {
   padding: 12px 14px;
   border-radius: 18px;
   background: #f4f8ff;
-  color: #1f4258;
+  color: #0c8048;
 }
 
 .settings-page {
@@ -539,7 +608,7 @@ input[type="range"] {
   border-radius: 16px;
   padding: 14px 16px;
   font-size: 1rem;
-  color: #172937;
+  color: #0c8048;
   background: white;
   box-sizing: border-box;
 }
@@ -554,7 +623,7 @@ input[type="range"] {
 
 .report-actions button.status-button {
   background: #e5f1ff;
-  color: #1f4f8b;
+  color: #0c8048;
 }
 
 .report-actions button.status-button:hover {
@@ -581,7 +650,7 @@ input[type="range"] {
   border-radius: 24px;
   background: #f8fbff;
   box-shadow: 0 18px 35px rgba(15, 23, 42, 0.08);
-  color: #1f4258;
+  color: #0c8048;
   text-align: left;
   cursor: pointer;
   width: calc(100% - 10px);
@@ -624,7 +693,7 @@ input[type="range"] {
   margin: 0;
   font-size: 0.94rem;
   font-weight: 700;
-  color: #172937;
+  color: #0c8048;
 }
 
 .modal-content input[type="text"] {
@@ -633,7 +702,7 @@ input[type="range"] {
   border: 1px solid #d9dfea;
   border-radius: 16px;
   font-size: 1rem;
-  color: #172937;
+  color: #0c8048;
 }
 
 .checkbox-label {
@@ -643,7 +712,7 @@ input[type="range"] {
   margin-top: 12px;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #172937;
+  color: #0c8048;
 }
 
 .checkbox-label input {
@@ -799,7 +868,7 @@ input[type="range"] {
   justify-content: space-between;
   gap: 16px;
   margin-top: 10px;
-  color: #5c6d7c;
+  color: #0c8048;
   font-size: 0.92rem;
 }
 
@@ -808,7 +877,7 @@ input[type="range"] {
   background: white;
   border-radius: 24px;
   text-align: center;
-  color: #5c6d7c;
+  color: #0c8048;
   box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
 }
 
@@ -833,7 +902,214 @@ input[type="range"] {
 
 .aq-details p {
     margin: 0;
-    line-height: 1.6;
+}
+
+/* Settings Page Styles */
+.settings-page {
+  padding: 20px;
+  max-width: 100%;
+  overflow-y: auto;
+  margin-top: 72px;
+  margin-bottom: 110px;
+  background-color: #f5f8fc;
+  min-height: calc(100vh - 182px);
+}
+
+.settings-panel {
+  display: grid;
+  gap: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.settings-card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.settings-card h2 {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  color: #0c8048;
+}
+
+.settings-card p {
+  margin: 0 0 16px;
+  color: #0c8048;
+  font-size: 0.95rem;
+}
+
+.settings-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+}
+
+.setting-btn {
+  padding: 12px 16px;
+  border: 2px solid #d9dfea;
+  border-radius: 12px;
+  background: white;
+  color: #0c804837;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.setting-btn:hover {
+  border-color: #0c8048;
+  background: #f0f5f9;
+}
+
+.setting-btn.active {
+  border-color: #4caf50;
+  background: #e9f7e8;
+  color: #2d6d27;
+  font-weight: 700;
+}
+
+.settings-toggles {
+  display: grid;
+  gap: 12px;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid #e0e6f0;
+  border-radius: 12px;
+  background: #fafbfd;
+  cursor: pointer;
+  font-weight: 500;
+  color: #0c8048;
+  transition: all 0.2s ease;
+}
+
+.toggle-label:hover {
+  background: #f0f5f9;
+  border-color: #d0dae8;
+}
+
+.toggle-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #4caf50;
+}
+
+.toggle-label input[type="checkbox"]:checked + span {
+  font-weight: 600;
+  color: #2d6d27;
+}
+
+/* Text size responsive styling */
+:root {
+  --base-font-size: 16px;
+}
+
+body {
+  font-size: var(--base-font-size);
+}
+
+h1 { font-size: calc(var(--base-font-size) * 1.8); }
+h2 { font-size: calc(var(--base-font-size) * 1.4); }
+h3 { font-size: calc(var(--base-font-size) * 1.2); }
+p { font-size: var(--base-font-size); }
+
+/* Settings input field styling */
+.settings-card input[type="password"],
+.settings-card input[type="text"] {
+  width: 100%;
+  padding: 12px 16px;
+  margin: 8px 0;
+  border: 1px solid #d9dfea;
+  border-radius: 12px;
+  font-size: var(--base-font-size);
+  color: #172937;
+}
+
+.settings-card input[type="password"]:focus,
+.settings-card input[type="text"]:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.report-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 12px 0;
+  border-left: 4px solid #4caf50;
+  box-shadow: 0 4px 12px #053b21;
+}
+
+.report-card h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.report-card p {
+  margin: 6px 0;
+  color: #5c6d7c;
+  font-size: 0.95rem;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  background: #e3f2fd;
+  color: #0c8048;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.report-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.status-button {
+  flex: 1;
+  min-width: 100px;
+  padding: 8px 12px;
+  border: 1px solid #d9dfea;
+  border-radius: 10px;
+  background: white;
+  color: #0c8048;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.status-button:hover {
+  border-color: #4caf50;
+  background: #e9f7e8;
+  color: #2d6d27;
+}
+
+/* Responsive adjustments for settings */
+@media (max-width: 480px) {
+  .settings-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .settings-card {
+    padding: 16px;
+  }
+  
+  .toggle-label {
+    padding: 10px 12px;
+  }
 }
 
 

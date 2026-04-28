@@ -6,38 +6,73 @@
     <title>SkopjeYeah - Settings</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
+    <script src="i18n.js" defer></script>
 </head>
 <body>
     <header class="top-bar">
         <div class="brand">
-            <span class="brand-mark"><img src="logo.png" alt="Logo"></span>
-            <span class="brand-text">SkopjeYEAH</span>
+            <span class="brand-mark"><img src="logo.svg" height="60px"></span>
         </div>
     </header>
-
-    <main class="settings-page">
+   <main class="settings-page">
         <div class="settings-panel">
+            
             <div class="settings-card">
-                <h2>Official Sign In</h2>
-                <p>Enter the official access code to manage report statuses.</p>
-                <input id="officialCode" type="password" placeholder="Official code" />
-                <button id="signInBtn" class="primary-btn" onclick="signInOfficial()">Sign In</button>
+                <h2 data-i18n="language">Language</h2>
+                <p data-i18n="selectLanguage">Select your preferred language</p>
+                <div class="settings-options">
+                    <button class="setting-btn language-btn" onclick="changeLanguage('en')" data-lang="en">
+                        <span data-i18n="english">English</span>
+                    </button>
+                    <button class="setting-btn language-btn" onclick="changeLanguage('mk')" data-lang="mk">
+                        <span data-i18n="macedonian">Македонски</span>
+                    </button>
+                    <button class="setting-btn language-btn" onclick="changeLanguage('sq')" data-lang="sq">
+                        <span data-i18n="albanian">Shqip</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <h2 data-i18n="textSize">Text Size</h2>
+                <p data-i18n="selectTextSize">Adjust text size for better readability</p>
+                <div class="settings-options">
+                    <button class="setting-btn size-btn" onclick="changeFontSize('small')" data-size="small">
+                        <span data-i18n="small">Small</span>
+                    </button>
+                    <button class="setting-btn size-btn" onclick="changeFontSize('normal')" data-size="normal">
+                        <span data-i18n="normal">Normal</span>
+                    </button>
+                    <button class="setting-btn size-btn" onclick="changeFontSize('large')" data-size="large">
+                        <span data-i18n="large">Large</span>
+                    </button>
+                    <button class="setting-btn size-btn" onclick="changeFontSize('extra-large')" data-size="extra-large">
+                        <span data-i18n="extraLarge">Extra Large</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <h2 data-i18n="officialSignIn">Official Sign In</h2>
+                <p data-i18n="enterAccessCode">Enter the official access code to manage report statuses.</p>
+                <input id="officialCode" type="password" placeholder="Official code" data-i18n-placeholder="officialCode" />
+                <button id="signInBtn" class="primary-btn" onclick="signInOfficial()" data-i18n="signIn">Sign In</button>
                 <p id="signInMessage" class="hint-text"></p>
             </div>
 
             <div id="adminPanel" class="settings-card" style="display:none;">
-                <h2>Manage Reports</h2>
-                <p>Update status for submitted reports.</p>
+                <h2 data-i18n="manageReports">Manage Reports</h2>
+                <p data-i18n="updateStatus">Update status for submitted reports.</p>
                 <div id="reportList"></div>
             </div>
         </div>
     </main>
 
     <footer class="bottom-nav">
-        <a href="index.html#home" class="nav-item"><span class="nav-icon"><img src="home_ico.png" alt="Home"></span><span>Home</span></a>
-        <a href="AirQuality.html" class="nav-item"><span class="nav-icon"><img src="air_quality_ico.png" alt="Air Quality"></span><span>Air Quality</span></a>
-        <a href="Track.html" class="nav-item"><span class="nav-icon"><img src="track_ico.png" alt="Track"></span><span>Track</span></a>
-        <a href="settings.html" class="nav-item active"><span class="nav-icon"><img src="settings_ico.png" alt="Settings"></span><span>Settings</span></a>
+        <a href="index.html#home" class="nav-item"><span class="nav-icon"><img src="home_ico.svg" alt="Home"></span><span data-i18n="home">Home</span></a>
+        <a href="AirQuality.html" class="nav-item"><span class="nav-icon"><img src="air_quality_ico.svg" alt="Air Quality"></span><span data-i18n="airQuality">Air Quality</span></a>
+        <a href="Track.html" class="nav-item"><span class="nav-icon"><img src="track_ico.svg" alt="Track"></span><span data-i18n="track">Track</span></a>
+        <a href="settings.html" class="nav-item active"><span class="nav-icon"><img src="settings_ico.svg" alt="Settings"></span><span data-i18n="settings">Settings</span></a>
     </footer>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -55,24 +90,44 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const officialPassword = 'skopjeadmin';
+        const officialPassword = 'skopjeadmin'; // admin access code: skopjeadmin
+        const ADMIN_SIGN_IN_KEY = 'skopjeyeah_admin_signed_in';
         let isOfficial = false;
+
+        function isAdminSignedIn() {
+            return localStorage.getItem(ADMIN_SIGN_IN_KEY) === 'true';
+        }
+
+        function setAdminSignedIn(value) {
+            localStorage.setItem(ADMIN_SIGN_IN_KEY, value ? 'true' : 'false');
+            isOfficial = value;
+        }
 
         function signInOfficial() {
             const code = document.getElementById('officialCode').value.trim();
             const message = document.getElementById('signInMessage');
             if (code === officialPassword) {
-                isOfficial = true;
-                message.textContent = 'Signed in as official. You can manage report statuses.';
+                setAdminSignedIn(true);
+                message.textContent = window.i18n?.t('signedInAsOfficial') || 'Signed in as official. You can manage report statuses.';
                 message.style.color = '#2e7d32';
                 document.getElementById('adminPanel').style.display = 'block';
                 document.getElementById('officialCode').value = '';
                 loadReports();
             } else {
-                message.textContent = 'Access code is incorrect.';
+                message.textContent = window.i18n?.t('codeIncorrect') || 'Access code is incorrect.';
                 message.style.color = '#d32f2f';
             }
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (isAdminSignedIn()) {
+                setAdminSignedIn(true);
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('signInMessage').textContent = window.i18n?.t('signedInAsOfficial') || 'Signed in as official. You can manage report statuses.';
+                document.getElementById('signInMessage').style.color = '#2e7d32';
+                loadReports();
+            }
+        });
 
         async function loadReports() {
             const reportList = document.getElementById('reportList');
@@ -89,9 +144,13 @@
                     <p>Status: <span class="status-pill">${data.status || 'Reported'}</span></p>
                     <p>${data.tag ? 'Tag: ' + data.tag : ''} ${data.severity ? 'Severity: ' + data.severity + '%' : ''}</p>
                     <div class="report-actions">
-                        <button class="status-button" onclick="updateReportStatus('${doc.id}', 'Reported')">Reported</button>
-                        <button class="status-button" onclick="updateReportStatus('${doc.id}', 'In Progress')">In Progress</button>
-                        <button class="status-button" onclick="updateReportStatus('${doc.id}', 'Resolved')">Resolved</button>
+                        <select onchange="updateReportStatus('${doc.id}', this.value)">
+                            <option value="Reported" ${data.status === 'Reported' ? 'selected' : ''}>Reported</option>
+                            <option value="Viewed" ${data.status === 'Viewed' ? 'selected' : ''}>Viewed</option>
+                            <option value="Solving" ${data.status === 'Solving' ? 'selected' : ''}>Solving</option>
+                            <option value="Solved" ${data.status === 'Solved' ? 'selected' : ''}>Solved</option>
+                        </select>
+                        ${data.status === 'Solved' && data.type === 'landfill' ? `<button class="status-button" onclick="markEmerging('${doc.id}')">Emerging Again</button>` : ''}
                     </div>
                 `;
                 reportList.appendChild(item);
@@ -102,7 +161,22 @@
         }
 
         async function updateReportStatus(id, status) {
-            await db.collection('pins').doc(id).update({ status });
+            const doc = await db.collection('pins').doc(id).get();
+            const data = doc.data();
+            const updateData = { status };
+            if (status === 'Solved') {
+                if (data.type === 'landfill') {
+                    updateData.emerging = false;
+                } else if (data.type === 'dumpster') {
+                    updateData.full = false;
+                }
+            }
+            await db.collection('pins').doc(id).update(updateData);
+            loadReports();
+        }
+
+        async function markEmerging(id) {
+            await db.collection('pins').doc(id).update({ emerging: true });
             loadReports();
         }
     </script>
