@@ -14,7 +14,7 @@ html {
 
 #hero{
   font-family: "Fredoka", sans-serif;
-  background-image: url('heder.png');
+  background-image: url(https://images.pexels.com/photos/20087385/pexels-photo-20087385.jpeg?_gl=1*180z06v*_ga*MTY3Nzg2NjE5My4xNzc3NDEyODY4*_ga_8JE65Q40S6*czE3Nzc0MTI4NjckbzEkZzEkdDE3Nzc0MTI4NzQkajUzJGwwJGgw);
   background-size: cover;
   background-position: center;
   height: 200px;
