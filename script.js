@@ -205,39 +205,91 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    async function compressImageToWebp(file, quality = 0.8) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    
+                    canvas.toBlob(
+                        (blob) => {
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                                resolve(reader.result);
+                            };
+                            reader.onerror = reject;
+                            reader.readAsDataURL(blob);
+                        },
+                        'image/webp',
+                        quality
+                    );
+                };
+                img.onerror = reject;
+                img.src = e.target.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
     async function handleReportImageInput(event) {
         const file = event.target.files[0];
         if (!file) return;
 
-        const url = await readFileAsDataURL(file);
+        // Show loading state
         const preview = event.target.closest('.report-step')?.querySelector('.preview-image');
         if (preview) {
-            preview.src = url;
-            preview.classList.remove('hidden');
+            preview.classList.add('loading');
         }
 
-        if (!currentReport) {
-            currentReport = {
-                type: null,
-                label: '',
-                description: '',
-                urgent: false,
-                imageUrl: url,
-                latitude: null,
-                longitude: null,
-                locationSource: null,
-                reporterId
-            };
-        } else {
-            currentReport.imageUrl = url;
-            if (!currentReport.reporterId) {
-                currentReport.reporterId = reporterId;
+        try {
+            // Extract metadata first
+            const coords = await getGpsFromFile(file);
+            
+            // Compress image to webp
+            const compressedUrl = await compressImageToWebp(file, 0.8);
+            
+            // Show preview
+            if (preview) {
+                preview.src = compressedUrl;
+                preview.classList.remove('hidden');
+                preview.classList.remove('loading');
             }
-        }
 
-        const coords = await getGpsFromFile(file);
-        if (coords) {
-            setReportLocation(coords.lat, coords.lng, 'image');
+            if (!currentReport) {
+                currentReport = {
+                    type: null,
+                    label: '',
+                    description: '',
+                    urgent: false,
+                    imageUrl: compressedUrl,
+                    latitude: null,
+                    longitude: null,
+                    locationSource: null,
+                    reporterId
+                };
+            } else {
+                currentReport.imageUrl = compressedUrl;
+                if (!currentReport.reporterId) {
+                    currentReport.reporterId = reporterId;
+                }
+            }
+
+            if (coords) {
+                setReportLocation(coords.lat, coords.lng, 'image');
+            }
+        } catch (error) {
+            console.error('Error processing image:', error);
+            if (preview) {
+                preview.classList.remove('loading');
+            }
+            alert(window.i18n?.t('imageProcessError') || 'Error processing image. Please try again.');
         }
     }
 
@@ -478,8 +530,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let imageUrl = currentReport.imageUrl || null;
         if (imageFile && !imageUrl) {
-            imageUrl = await readFileAsDataURL(imageFile);
-            currentReport.imageUrl = imageUrl;
+            try {
+                imageUrl = await compressImageToWebp(imageFile, 0.8);
+                currentReport.imageUrl = imageUrl;
+            } catch (error) {
+                console.warn('Unable to compress image, using original:', error);
+                imageUrl = await readFileAsDataURL(imageFile);
+                currentReport.imageUrl = imageUrl;
+            }
         }
 
         const severity = currentReport.type === 'landfill' ? (currentReport.severity || Number(document.getElementById('reportSeverityL').value)) : null;

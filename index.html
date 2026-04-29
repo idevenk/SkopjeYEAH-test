@@ -6,25 +6,24 @@
     <title>SkopjeYeah</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
-    <script src="i18n.js" defer></script>
+    <script src="i18n.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fredoka">
 </head>
 <body>
     
     <header id="home" class="top-bar">
         <div class="brand">
-            <span class="brand-mark"><img src="logo.svg" height="60px"></span>
+            <span class="brand-mark"><img src="logo.png" height="40px"></span>
         </div>
-        <button onclick="requestUserLocation()" class="location-btn" title="Find My Location">📍</button>
+    
     </header>
-
- <header id="hero">
-        <h1 data-i18n="heroTitle">Alert Us For a Cleaner Skopje</h1>
-        <p data-i18n="heroSubtitle">Real Time Air, Waste & Landfill Monitoring</p>
-        <div id="rotating-info" class="rotating-info">Loading tips...</div>
+    
+    <header id="hero">
+        <h1 class="heroh1" data-i18n="heroTitle">Alert Us For a Cleaner Skopje</h1>
+        <p class="herop" data-i18n="heroSubtitle">Real Time Air, Waste & Landfill Monitoring</p>
     </header>
 
     <div id="map"></div>
-    <div id="localAqBanner" class="local-aq-banner hidden"></div>
 
     <div class="report-action">
         <div class="report-label" data-i18n="reportNew">REPORT NEW</div>
@@ -32,10 +31,10 @@
     </div>
 
     <footer class="bottom-nav">
-        <a href="index.html#home" class="nav-item"><span class="nav-icon"><img src="home_ico.svg" alt="Home"></span><span data-i18n="home">Home</span></a>
+        <a href="index.html#home" class="nav-item><span class="nav-icon"><img src="home_ico.svg" alt="Home"></span><span data-i18n="home">Home</span></a>
         <a href="AirQuality.html" class="nav-item"><span class="nav-icon"><img src="air_quality_ico.svg" alt="Air Quality"></span><span data-i18n="airQuality">Air Quality</span></a>
         <a href="Track.html" class="nav-item"><span class="nav-icon"><img src="track_ico.svg" alt="Track"></span><span data-i18n="track">Track</span></a>
-        <a href="settings.html" class="nav-item active"><span class="nav-icon"><img src="settings_ico.svg" alt="Settings"></span><span data-i18n="settings">Settings</span></a>
+        <a href="settings.html" class="nav-item"><span class="nav-icon"><img src="settings_ico.svg" alt="Settings"></span><span data-i18n="settings">Settings</span></a>
     </footer>
 
     <div id="reportSheet" class="sheet hidden">
@@ -50,59 +49,49 @@
 
         <div id="reportSelect" class="report-step">
             <button class="report-type" onclick="selectCategory('Illegal Landfill', this)">
-                <span class="report-icon"><img src="landfill_ico.png"></span>
+                <span class="report-icon"><img src="landfill.svg"></span>
                 <span class="report-name" data-i18n="reportTypeIllegalLandfill">Illegal Landfill</span>
                 <span class="report-caption" data-i18n="reportCaptionLandfill">Report illegal waste disposal</span>
             </button>
             <button class="report-type" onclick="selectCategory('Full Container', this)">
-                <span class="report-icon"><img src="dumpster_ico.png"></span>
+                <span class="report-icon"><img src="dumpsters.svg"></span>
                 <span class="report-name" data-i18n="reportTypeFullContainer">Mark Dumpster</span>
                 <span class="report-caption" data-i18n="reportCaptionDumpster">Flag (overflowing) public dumpsters</span>
             </button>
         </div>
 
         <div id="reportFormL" class="report-step hidden">
-            <p class="selected-label" id="selectedTypeLabel" data-i18n="selectReportType">Select a report type</p>
+            <p class="selected-label" id="selectedTypeLabel" data-i18n="reportSelectLabel">Select a report type</p>
             <input id="reportDescriptionL" type="text" placeholder="Describe the location or issue" data-i18n-placeholder="describeLocation" />
             <div class="severity-group">
                 <button type="button" class="severity-button" onclick="setLandfillTag('Near School', this)" data-i18n="nearSchool">Near School</button>
                 <button type="button" class="severity-button" onclick="setLandfillTag('Near River', this)" data-i18n="nearRiver">Near River</button>
             </div>
-            <div class="severity-bar-section">
-                <div class="severity-bar-header">
-                    <h3 data-i18n="setSeverity">Set Severity</h3>
-                </div>
-                <div class="range-group severity-range-group">
-                    <span data-i18n="earlyStage">Early Stage</span>
-                    <input id="reportSeverityL" type="range" min="1" max="100" value="30" oninput="updateSeverityLabel(this.value)" />
-                    <span data-i18n="large">Large</span>
-                </div>
-                <div class="severity-legend">
-                    <span>&lt; 10 m²</span>
-                    <span>100 - 1,000 m²</span>
-                    <span>1,000 - 10,000 m²</span>
-                </div>
+            <div class="range-group">
+                <span data-i18n="earlyStage">Early Stage</span>
+                <input id="reportSeverityL" type="range" min="1" max="100" value="30" oninput="updateSeverityLabel(this.value)" />
+                <span data-i18n="large">Large</span>
             </div>
             <div class="severity-label"><span id="severityValue">30</span>% <span data-i18n="severity">severity</span></div>
             <label class="checkbox-label"><input id="reportFullCheckboxL" type="checkbox" /><span data-i18n="urgent">Urgent</span></label>
-           <label class="upload-label" data-i18n="addPhoto">
-                Add photo
-                <input id="reportImageL" type="file" accept="image/*" onchange="previewReportImage(event)" />
+            <label class="upload-label">
+                <input id="reportImageL" type="file" accept="image/*" onchange="handleReportImageInput(event)" />
+                <span data-i18n="addPhoto">Add Photo</span>
             </label>
-            <img id="previewImageL" class="preview-image hidden" src="" alt="Report preview" /> 
+            <img id="previewImageL" class="preview-image hidden" src="" alt="Report preview" />
             <p class="hint-text" data-i18n="reportLocationHint">Tap the map to choose the report location.</p>
             <button id="confirmReportBtnL" onclick="confirmReport()" data-i18n="submit">Submit</button>
         </div>
 
         <div id="reportFormD" class="report-step hidden">
-            <p class="selected-label" id="selectedTypeLabelD" data-i18n="selectReportType">Select a report type</p>
+            <p class="selected-label" id="selectedTypeLabelD" data-i18n="reportSelectLabel">Select a report type</p>
             <input id="reportDescriptionD" type="text" placeholder="Describe the location or issue" data-i18n-placeholder="describeLocation" />
-            <label class="checkbox-label"><input id="reportFullCheckboxD" type="checkbox" /> <span data-i18n="markAsFull">Mark as full</span></label>
-            <label class="upload-label" data-i18n="addPhoto">
-                Add photo
-                <input id="reportImageL" type="file" accept="image/*" onchange="previewReportImage(event)" />
+            <label class="checkbox-label"><input id="reportFullCheckboxD" type="checkbox" /><span data-i18n="markAsFull">Mark as full</span></label>
+            <label class="upload-label">
+                <input id="reportImageD" type="file" accept="image/*" onchange="handleReportImageInput(event)" />
+                <span data-i18n="addPhoto">Add Photo</span>
             </label>
-            <img id="previewImageL" class="preview-image hidden" src="" alt="Report preview" />
+            <img id="previewImageD" class="preview-image hidden" src="" alt="Report preview" />
             <p class="hint-text" data-i18n="reportLocationHint">Tap the map to choose the report location.</p>
             <button id="confirmReportBtnD" onclick="confirmReport()" data-i18n="submit">Submit</button>
         </div>
@@ -124,10 +113,9 @@
         </div>
     </div>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
     
     <script>

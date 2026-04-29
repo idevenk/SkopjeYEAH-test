@@ -6,17 +6,20 @@
     <title>SkopjeYeah - Settings</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
-    <script src="i18n.js" defer></script>
+    <style>
+        html { font-size: var(--base-font-size, 16px); }
+    </style>
 </head>
 <body>
     <header class="top-bar">
         <div class="brand">
-            <span class="brand-mark"><img src="logo.svg" height="60px"></span>
+            <span class="brand-mark"><img src="logo.png" height="40px"></span>
         </div>
     </header>
-   <main class="settings-page">
+
+    <main class="settings-page">
         <div class="settings-panel">
-            
+            <!-- Language Settings -->
             <div class="settings-card">
                 <h2 data-i18n="language">Language</h2>
                 <p data-i18n="selectLanguage">Select your preferred language</p>
@@ -33,6 +36,7 @@
                 </div>
             </div>
 
+            <!-- Text Size Settings -->
             <div class="settings-card">
                 <h2 data-i18n="textSize">Text Size</h2>
                 <p data-i18n="selectTextSize">Adjust text size for better readability</p>
@@ -52,10 +56,47 @@
                 </div>
             </div>
 
+            <!-- Pin Types Settings -->
+            <div class="settings-card">
+                <h2 data-i18n="pinTypes">Pin Types to Display</h2>
+                <p data-i18n="togglePinVisibility">Toggle which report types appear on the map</p>
+                <div class="settings-toggles">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="landfillToggle" onchange="togglePinType('landfill')" checked>
+                        <span data-i18n="landfill">Landfills</span>
+                    </label>
+                    <label class="toggle-label">
+                        <input type="checkbox" id="dumpsterToggle" onchange="togglePinType('dumpster')" checked>
+                        <span data-i18n="dumpster">Dumpsters</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Air Quality Sources Settings -->
+            <div class="settings-card">
+                <h2 data-i18n="airQualitySources">Air Quality Data Sources</h2>
+                <p data-i18n="selectDataSources">Choose which station types to display</p>
+                <div class="settings-toggles">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="publicStationsToggle" onchange="toggleAqiSource('public')" checked>
+                        <span data-i18n="publicStations">Public Stations</span>
+                    </label>
+                    <label class="toggle-label">
+                        <input type="checkbox" id="privateStationsToggle" onchange="toggleAqiSource('private')" checked>
+                        <span data-i18n="privateStations">Private Stations</span>
+                    </label>
+                    <label class="toggle-label">
+                        <input type="checkbox" id="cityManagedToggle" onchange="toggleAqiSource('cityManaged')" checked>
+                        <span data-i18n="cityManagedStations">City Managed Stations</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Official Sign In -->
             <div class="settings-card">
                 <h2 data-i18n="officialSignIn">Official Sign In</h2>
                 <p data-i18n="enterAccessCode">Enter the official access code to manage report statuses.</p>
-                <input id="officialCode" type="password" placeholder="Official code" data-i18n-placeholder="officialCode" />
+                <input id="officialCode" type="password" placeholder="" data-i18n-placeholder="officialCode" />
                 <button id="signInBtn" class="primary-btn" onclick="signInOfficial()" data-i18n="signIn">Sign In</button>
                 <p id="signInMessage" class="hint-text"></p>
             </div>
@@ -69,12 +110,13 @@
     </main>
 
     <footer class="bottom-nav">
-        <a href="index.html#home" class="nav-item"><span class="nav-icon"><img src="home_ico.svg" alt="Home"></span><span data-i18n="home">Home</span></a>
+             <a href="index.html#home" class="nav-item><span class="nav-icon"><img src="home_ico.svg" alt="Home"></span><span data-i18n="home">Home</span></a>
         <a href="AirQuality.html" class="nav-item"><span class="nav-icon"><img src="air_quality_ico.svg" alt="Air Quality"></span><span data-i18n="airQuality">Air Quality</span></a>
         <a href="Track.html" class="nav-item"><span class="nav-icon"><img src="track_ico.svg" alt="Track"></span><span data-i18n="track">Track</span></a>
-        <a href="settings.html" class="nav-item active"><span class="nav-icon"><img src="settings_ico.svg" alt="Settings"></span><span data-i18n="settings">Settings</span></a>
+        <a href="settings.html" class="nav-item"><span class="nav-icon"><img src="settings_ico.svg" alt="Settings"></span><span data-i18n="settings">Settings</span></a>
     </footer>
 
+    <script src="i18n.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script>
@@ -90,48 +132,63 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const officialPassword = 'skopjeadmin'; // admin access code: skopjeadmin
-        const ADMIN_SIGN_IN_KEY = 'skopjeyeah_admin_signed_in';
+        const officialPassword = 'skopjeadmin';
         let isOfficial = false;
 
-        function isAdminSignedIn() {
-            return localStorage.getItem(ADMIN_SIGN_IN_KEY) === 'true';
+        // Initialize page translations
+        function updatePageText() {
+            window.i18n.translateDocument();
+
+            // Update active button states
+            document.querySelectorAll('.language-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === window.i18n.currentLanguage);
+            });
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.size === window.i18n.currentFontSize);
+            });
         }
 
-        function setAdminSignedIn(value) {
-            localStorage.setItem(ADMIN_SIGN_IN_KEY, value ? 'true' : 'false');
-            isOfficial = value;
+        function changeLanguage(lang) {
+            window.i18n.setLanguage(lang);
+            updatePageText();
+        }
+
+        function changeFontSize(size) {
+            window.i18n.setFontSize(size);
+            updatePageText();
+        }
+
+        function togglePinType(type) {
+            const visibility = { ...window.i18n.pinVisibility };
+            visibility[type] = !visibility[type];
+            window.i18n.setPinVisibility(visibility);
+        }
+
+        function toggleAqiSource(source) {
+            const sources = { ...window.i18n.aqiSources };
+            sources[source] = !sources[source];
+            window.i18n.setAqiSources(sources);
         }
 
         function signInOfficial() {
             const code = document.getElementById('officialCode').value.trim();
             const message = document.getElementById('signInMessage');
             if (code === officialPassword) {
-                setAdminSignedIn(true);
-                message.textContent = window.i18n?.t('signedInAsOfficial') || 'Signed in as official. You can manage report statuses.';
+                isOfficial = true;
+                message.textContent = window.i18n.t('signedInAsOfficial');
                 message.style.color = '#2e7d32';
                 document.getElementById('adminPanel').style.display = 'block';
                 document.getElementById('officialCode').value = '';
                 loadReports();
             } else {
-                message.textContent = window.i18n?.t('codeIncorrect') || 'Access code is incorrect.';
+                message.textContent = window.i18n.t('codeIncorrect');
                 message.style.color = '#d32f2f';
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            if (isAdminSignedIn()) {
-                setAdminSignedIn(true);
-                document.getElementById('adminPanel').style.display = 'block';
-                document.getElementById('signInMessage').textContent = window.i18n?.t('signedInAsOfficial') || 'Signed in as official. You can manage report statuses.';
-                document.getElementById('signInMessage').style.color = '#2e7d32';
-                loadReports();
-            }
-        });
-
         async function loadReports() {
             const reportList = document.getElementById('reportList');
-            reportList.innerHTML = '<p class="hint-text">Loading reports...</p>';
+            reportList.innerHTML = `<p class="hint-text">${window.i18n.t('loadingReports')}</p>`;
             const snapshot = await db.collection('pins').orderBy('timestamp', 'desc').get();
             reportList.innerHTML = '';
             snapshot.forEach(doc => {
@@ -141,44 +198,42 @@
                 item.innerHTML = `
                     <h2>${data.title || 'Report'}</h2>
                     <p>${data.description || 'No description'}</p>
-                    <p>Status: <span class="status-pill">${data.status || 'Reported'}</span></p>
+                    <p>${window.i18n.t('status')}: <span class="status-pill">${data.status || window.i18n.t('reported')}</span></p>
                     <p>${data.tag ? 'Tag: ' + data.tag : ''} ${data.severity ? 'Severity: ' + data.severity + '%' : ''}</p>
                     <div class="report-actions">
-                        <select onchange="updateReportStatus('${doc.id}', this.value)">
-                            <option value="Reported" ${data.status === 'Reported' ? 'selected' : ''}>Reported</option>
-                            <option value="Viewed" ${data.status === 'Viewed' ? 'selected' : ''}>Viewed</option>
-                            <option value="Solving" ${data.status === 'Solving' ? 'selected' : ''}>Solving</option>
-                            <option value="Solved" ${data.status === 'Solved' ? 'selected' : ''}>Solved</option>
-                        </select>
-                        ${data.status === 'Solved' && data.type === 'landfill' ? `<button class="status-button" onclick="markEmerging('${doc.id}')">Emerging Again</button>` : ''}
+                        <button class="status-button" onclick="updateReportStatus('${doc.id}', 'Reported')">${window.i18n.t('reported')}</button>
+                        <button class="status-button" onclick="updateReportStatus('${doc.id}', 'In Progress')">${window.i18n.t('inProgress')}</button>
+                        <button class="status-button" onclick="updateReportStatus('${doc.id}', 'Resolved')">${window.i18n.t('resolved')}</button>
                     </div>
                 `;
                 reportList.appendChild(item);
             });
             if (!reportList.children.length) {
-                reportList.innerHTML = '<p class="hint-text">No reports yet.</p>';
+                reportList.innerHTML = `<p class="hint-text">${window.i18n.t('noReports')}</p>`;
             }
         }
 
         async function updateReportStatus(id, status) {
-            const doc = await db.collection('pins').doc(id).get();
-            const data = doc.data();
-            const updateData = { status };
-            if (status === 'Solved') {
-                if (data.type === 'landfill') {
-                    updateData.emerging = false;
-                } else if (data.type === 'dumpster') {
-                    updateData.full = false;
-                }
-            }
-            await db.collection('pins').doc(id).update(updateData);
+            await db.collection('pins').doc(id).update({ status });
             loadReports();
         }
 
-        async function markEmerging(id) {
-            await db.collection('pins').doc(id).update({ emerging: true });
-            loadReports();
-        }
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePageText();
+            
+            // Update pin visibility toggles
+            document.getElementById('landfillToggle').checked = window.i18n.pinVisibility.landfill;
+            document.getElementById('dumpsterToggle').checked = window.i18n.pinVisibility.dumpster;
+            
+            // Update AQI source toggles
+            document.getElementById('publicStationsToggle').checked = window.i18n.aqiSources.public;
+            document.getElementById('privateStationsToggle').checked = window.i18n.aqiSources.private;
+            document.getElementById('cityManagedToggle').checked = window.i18n.aqiSources.cityManaged;
+            
+            // Listen for language/font changes
+            window.addEventListener('i18nChanged', updatePageText);
+        });
     </script>
 </body>
 </html>

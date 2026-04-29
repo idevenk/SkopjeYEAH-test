@@ -6,13 +6,17 @@
     <title>SkopjeYeah - Air Quality</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
+    <style>
+        html { font-size: var(--base-font-size, 16px); }
+    </style>
+    <script src="i18n.js" defer></script>
 </head>
 <body>
     <header class="top-bar">
         <div class="brand">
-            <span class="brand-mark"><img src="logo.svg" height="60px"></span>
+            <span class="brand-mark"><img src="logo.png" height="40px"></span>
         </div>
-        <button onclick="requestUserLocation()" class="location-btn" title="Find My Location">📍</button>
+        <button onclick="requestUserLocation()" class="location-btn" data-i18n-title="findMyLocation" title="Find My Location">📍</button>
     </header>
 
     <div id="map"></div>
@@ -27,7 +31,7 @@
         <div class="aq-popup-card full-width-card">
             <div class="sheet-handle"></div>
             <button class="close-modal" onclick="closeAqPopup()">×</button>
-            <h3 id="aqPopupTitle">Air Quality Details</h3>
+            <h3 id="aqPopupTitle" data-i18n="aqPopupTitle">Air Quality Details</h3>
             <div class="aq-popup-summary">
                 <div class="aq-value" id="aqPopupValue">--</div>
                 <div>
@@ -38,9 +42,9 @@
             <div class="aq-slider-wrapper">
                 <input id="aqColorSlider" class="aq-color-slider" type="range" min="0" max="100" value="30" disabled />
                 <div class="aq-slider-labels">
-                    <span>Good</span>
-                    <span>Moderate</span>
-                    <span>Poor</span>
+                    <span data-i18n="good">Good</span>
+                    <span data-i18n="moderate">Moderate</span>
+                    <span data-i18n="poor">Poor</span>
                 </div>
             </div>
             <ul id="aqPopupList" class="aq-popup-list"></ul>
@@ -48,15 +52,13 @@
     </div>
 
   <footer class="bottom-nav">
-        <a href="index.html#home" class="nav-item"><span class="nav-icon"><img src="home_ico.svg" alt="Home"></span><span data-i18n="home">Home</span></a>
+       <a href="index.html#home" class="nav-item><span class="nav-icon"><img src="home_ico.svg" alt="Home"></span><span data-i18n="home">Home</span></a>
         <a href="AirQuality.html" class="nav-item"><span class="nav-icon"><img src="air_quality_ico.svg" alt="Air Quality"></span><span data-i18n="airQuality">Air Quality</span></a>
         <a href="Track.html" class="nav-item"><span class="nav-icon"><img src="track_ico.svg" alt="Track"></span><span data-i18n="track">Track</span></a>
-        <a href="settings.html" class="nav-item active"><span class="nav-icon"><img src="settings_ico.svg" alt="Settings"></span><span data-i18n="settings">Settings</span></a>
-    </footer>
+        <a href="settings.html" class="nav-item"><span class="nav-icon"><img src="settings_ico.svg" alt="Settings"></span><span data-i18n="settings">Settings</span></a>
 
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="i18n.js" defer></script>
     <script src="airQualityAPI.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {

@@ -57,6 +57,8 @@ const translations = {
     dominentPollutant: 'Dominant pollutant',
     source: 'Source',
     updated: 'Updated',
+    aqPopupTitle: 'Air Quality Details',
+    findMyLocation: 'Find My Location',
     
     // Track
     trackReports: 'Track Reports',
@@ -186,6 +188,8 @@ const translations = {
     dominentPollutant: 'Доминантен загадувач',
     source: 'Извор',
     updated: 'Ажурирано',
+    aqPopupTitle: 'Детали за квалитетот на воздухот',
+    findMyLocation: 'Најди моја локација',
     
     // Track
     trackReports: 'Следи пријави',
@@ -371,6 +375,8 @@ const translations = {
     setSeverity: 'Vendos intensitetin',
     reportSubmittedSuccess: 'Raporti u dorëzua me sukses!',
     reportTrackNow: 'Ndjek tani',
+    aqPopupTitle: 'Detajet e cilësisë së ajrit',
+    findMyLocation: 'Gjej vendndodhjen time',
     // Status labels
     status: 'Statusi',
     inProgress: 'Në vazhdim',
